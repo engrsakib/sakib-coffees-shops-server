@@ -40,19 +40,47 @@ async function run() {
     });
 
     // coffee read from database
-    app.get('/coffee', async(req,res)=>{
+    app.get("/coffee", async (req, res) => {
       const cursor = coffeeCalection.find();
       const result = await cursor.toArray();
       res.send(result);
-    })
-
-    //delete
-    app.delete('/coffee/:id', async(req, res)=>{
+    });
+    // update coffee
+    app.put('/coffee/:id', async(req, res)=>{
       const id = req.params.id;
-      const query = {_id : new ObjectId(id)}
-      const result = await coffeeCalection.deleteOne(query);
+      const filter = {_id : new ObjectId(id)};
+      const options = {upsert: true};
+      const updatedCoffe = req.body;
+      const update = {
+        $set: {
+          name: updatedCoffe.name,
+          quantity: updatedCoffe.quantity,
+          supplier: updatedCoffe.supplier,
+          taste: updatedCoffe.taste,
+          category: updatedCoffe.category,
+          price: updatedCoffe.price,
+          details: updatedCoffe.details,
+          photo: updatedCoffe.photo,
+        },
+      };
+      const result = await coffeeCalection.updateOne(filter, update, options);
       res.send(result);
     })
+
+    // upload coffee
+    app.get("/coffee/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await coffeeCalection.findOne(query);
+      res.send(result);
+    });
+    //delete
+    app.delete("/coffee/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await coffeeCalection.deleteOne(query);
+      res.send(result);
+    });
   } finally {
     // Ensures that the client will close when you finish/error
     // await client.close();
@@ -68,9 +96,6 @@ app.use(express.json());
 app.get("/", (req, res) => {
   res.send("sakib coffee shops server is running");
 });
-
-
-
 
 //por
 app.listen(port, () => {
