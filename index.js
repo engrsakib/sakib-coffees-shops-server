@@ -38,6 +38,13 @@ async function run() {
       const result = await coffeeCalection.insertOne(newCoffe);
       res.send(result);
     });
+
+    // coffee read from database
+    app.get('/coffee', async(req,res)=>{
+      const cursor = coffeeCalection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    })
   } finally {
     // Ensures that the client will close when you finish/error
     // await client.close();
