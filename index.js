@@ -34,7 +34,7 @@ async function run() {
     // coffees save in database
     app.post("/coffee", async (req, res) => {
       const newCoffe = req.body;
-      // console.log(newCoffe);
+      console.log(newCoffe);
       const result = await coffeeCalection.insertOne(newCoffe);
       res.send(result);
     });
