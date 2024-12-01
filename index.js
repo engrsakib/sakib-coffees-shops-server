@@ -22,7 +22,7 @@ async function run() {
     //waite for server
     await client.connect();
     const coffeeCalection = client.db("coffeeDB").collection("coffee");
-
+    const userCollection = client.db("coffeeDB").collection("users");
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
     // Send a ping to confirm a successful connection
@@ -81,6 +81,16 @@ async function run() {
       const result = await coffeeCalection.deleteOne(query);
       res.send(result);
     });
+
+
+    //users related api
+    app.post('/users', async(req, res)=>{
+      const newUser = req.body;
+      const result = await userCollection.insertOne(newUser);
+      res.send(result);
+    })
+
+
   } finally {
     // Ensures that the client will close when you finish/error
     // await client.close();
@@ -101,3 +111,5 @@ app.get("/", (req, res) => {
 app.listen(port, () => {
   console.log(`coffee server is running on port ${port}`);
 });
+
+
